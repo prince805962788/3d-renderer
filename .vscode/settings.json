@@ -1,9 +1,9 @@
 {
   "[c]": {
-    "editor.defaultFormatter": "ms-vscode.cpptools",
+    "editor.defaultFormatter": "xaver.clang-format",
     "editor.formatOnSave": true
   },
   "files.associations": {
-    "stdint.h": "c"
+    "display.h": "c"
   }
 }

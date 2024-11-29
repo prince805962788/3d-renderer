@@ -6,8 +6,6 @@ TabWidth: 4
 UseTab: Never                  # 使用空格而不是Tab
 # 行宽限制
 ColumnLimit: 100              # 设置适中的行宽限制
-# 大括号风格
-BreakBeforeBraces: Linux      # Linux风格的大括号
 # 指针和引用的对齐
 PointerAlignment: Right       # 指针星号靠右对齐
 # 函数相关
@@ -19,6 +17,9 @@ SpaceBeforeParens: ControlStatements  # 控制语句的括号前加空格
 # 对齐相关
 AlignConsecutiveMacros: true  # 连续宏定义对齐
 AlignConsecutiveAssignments: false  # 赋值语句不强制对齐
+# 禁止将函数参数打包在同一行
+BinPackParameters: false
+BinPackArguments: false
 # 其他常用设置
 MaxEmptyLinesToKeep: 1        # 最多保留1个空行
 KeepEmptyLinesAtTheStartOfBlocks: false  # 代码块开始处不保留空行
