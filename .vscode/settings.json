@@ -4,6 +4,8 @@
     "editor.formatOnSave": true
   },
   "files.associations": {
-    "display.h": "c"
+    "display.h": "c",
+    "stdbool.h": "c",
+    "stdint.h": "c"
   }
 }

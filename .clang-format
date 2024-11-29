@@ -5,7 +5,7 @@ IndentWidth: 4                 # 使用4空格缩进
 TabWidth: 4
 UseTab: Never                  # 使用空格而不是Tab
 # 行宽限制
-ColumnLimit: 100              # 设置适中的行宽限制
+ColumnLimit: 80              # 设置适中的行宽限制
 # 指针和引用的对齐
 PointerAlignment: Right       # 指针星号靠右对齐
 # 函数相关
@@ -20,6 +20,8 @@ AlignConsecutiveAssignments: false  # 赋值语句不强制对齐
 # 禁止将函数参数打包在同一行
 BinPackParameters: false
 BinPackArguments: false
+#一行放不下时，总是在一个开括号之后换行，且在新行关闭尾括号。
+AlignAfterOpenBracket: BlockIndent
 # 其他常用设置
 MaxEmptyLinesToKeep: 1        # 最多保留1个空行
 KeepEmptyLinesAtTheStartOfBlocks: false  # 代码块开始处不保留空行
