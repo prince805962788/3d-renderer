@@ -2,5 +2,8 @@
   "[c]": {
     "editor.defaultFormatter": "ms-vscode.cpptools",
     "editor.formatOnSave": true
+  },
+  "files.associations": {
+    "stdint.h": "c"
   }
 }
