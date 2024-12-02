@@ -4,9 +4,12 @@
 const int N_POINTS = 9 * 9 * 9;
 vec3_t cube_points[N_POINTS];
 vec2_t projected_points[N_POINTS];
+vec3_t camera_position = {.x = 0, .y = 0, .z = -5};
+vec3_t cube_rotation = {.x = 0, .y = 0, .z = 0};
+float fov_factor = 640;
 
-float fov_factor = 128;
 bool is_running = false;
+int previous_frame_time = 0;
 
 void draw_cube(void) {
     int point_count = 0;
@@ -60,14 +63,31 @@ void process_input(void) {
 /// @return 2D point
 vec2_t project(vec3_t point) {
     vec2_t projected_point = {
-        .x = (fov_factor * point.x), .y = (fov_factor * point.y)
+        .x = (fov_factor * point.x) / point.z,
+        .y = (fov_factor * point.y) / point.z
     };
     return projected_point;
 }
 void update(void) {
+    int time_to_wait =
+        FRAME_TARGET_TIME - (SDL_GetTicks() - previous_frame_time);
+    if (time_to_wait > 0 && time_to_wait <= FRAME_TARGET_TIME) {
+        SDL_Delay(time_to_wait);
+    }
+    previous_frame_time = SDL_GetTicks();
+    cube_rotation.x += 0.01f;
+    cube_rotation.y += 0.01f;
+    cube_rotation.z += 0.01f;
     for (int i = 0; i < N_POINTS; i++) {
         vec3_t point = cube_points[i];
-        vec2_t projected_point = project(point);
+        vec3_t transformed_point = vec3_rotate_x(point, cube_rotation.x);
+        transformed_point = vec3_rotate_y(transformed_point, cube_rotation.y);
+        transformed_point = vec3_rotate_z(transformed_point, cube_rotation.z);
+        // translate the points away from the camera position
+        transformed_point.z -= camera_position.z;
+        // project the point
+        vec2_t projected_point = project(transformed_point);
+        // save the projected 2D vector  in a array of projected points
         projected_points[i] = projected_point;
     }
 }
@@ -76,7 +96,7 @@ void render(void) {
     // SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // set color to black
     // SDL_RenderClear(renderer);                      // clear the screen
 
-    draw_grid(0x333333ff); // render grid
+    draw_grid(0xffffffff); // render grid
 
     // loop all projected points and draw them
     for (int i = 0; i < N_POINTS; i++) {
@@ -91,7 +111,7 @@ void render(void) {
     }
 
     render_color_buffer(); // update color buffer to cache for rendering screen
-    clear_color_buffer(0xffffffff); // clear color buffer to prepare next frame
+    clear_color_buffer(0x000000ff); // clear color buffer to prepare next frame
 
     SDL_RenderPresent(renderer); // render the screen
 }
