@@ -6,6 +6,7 @@
   "files.associations": {
     "display.h": "c",
     "stdbool.h": "c",
-    "stdint.h": "c"
+    "stdint.h": "c",
+    "array": "cpp"
   }
 }

@@ -3,7 +3,7 @@
 #include "triangle.h"
 #include "vector.h"
 
-triangle_t triangles_to_render[N_CUBE_FACES];
+triangle_t *triangles_to_render = NULL;
 
 vec3_t camera_position = {.x = 0, .y = 0, .z = -5};
 vec3_t cube_rotation = {.x = 0, .y = 0, .z = 0};
@@ -13,10 +13,10 @@ bool is_running = false;
 int previous_frame_time = 0;
 
 void setup(void) {
-    // allocate memory for color buffer
+    // Allocate memory for color buffer
     color_buffer =
         (uint32_t *)malloc(sizeof(uint32_t) * window_width * window_height);
-    // create color buffer texture
+    // Create color buffer texture
     if (color_buffer == NULL) {
         fprintf(stderr, "Failed to allocate memory for color buffer\n");
         is_running = false;
@@ -59,12 +59,15 @@ void update(void) {
         SDL_Delay(time_to_wait);
     }
     previous_frame_time = SDL_GetTicks();
+    // Initialize the array of triangles to render
+    triangles_to_render = NULL;
+
     cube_rotation.x += 0.01;
     cube_rotation.y += 0.01;
     cube_rotation.z += 0.01;
 
     // Loop all triangle faces of our cube
-    for (int i = 0; i < N_CUBE_FACES; i++) {
+    for (int i = 0; i < N_MESH_FACES; i++) {
         face_t cube_face = cube_faces[i];
 
         // Get the vertices of the triangle
@@ -86,7 +89,7 @@ void update(void) {
             transformed_vertex =
                 vec3_rotate_z(transformed_vertex, cube_rotation.z);
 
-            // transform the vertex by the camera position
+            // Transform the vertex by the camera position
             transformed_vertex.z -= camera_position.z;
 
             // Project the current transformed vertex
@@ -100,18 +103,20 @@ void update(void) {
             projected_triangle.points[j] = projected_point;
         }
         // Store the projected triangle in the array of triangles to render
-        triangles_to_render[i] = projected_triangle;
+        // triangles_to_render[i] = projected_triangle;
+        array_push(triangles_to_render, projected_triangle);
     }
 }
 void render(void) {
-    // we can reuse color buffer,so we can abolish the following code
+    // We can reuse color buffer,so we can abolish the following code
     // SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // set color to black
     // SDL_RenderClear(renderer);                      // clear the screen
 
     draw_grid(0x666666ff); // render grid
 
     // Loop through all triangles to render
-    for (int i = 0; i < N_CUBE_FACES; i++) {
+    int num_triangles = array_length(triangles_to_render);
+    for (int i = 0; i < num_triangles; i++) {
         triangle_t current_triangle = triangles_to_render[i];
         draw_triangle(
             current_triangle.points[0].x,
@@ -123,10 +128,14 @@ void render(void) {
             0x0000ffff
         );
     }
-    render_color_buffer(); // update color buffer to cache for rendering screen
-    clear_color_buffer(0x000000ff); // clear color buffer to prepare next frame
-
-    SDL_RenderPresent(renderer); // render the screen
+    // Clear the array of triangles to render
+    array_free(triangles_to_render);
+    // Update color buffer to cache for rendering screen
+    render_color_buffer();
+    // Clear color buffer to prepare next frame
+    clear_color_buffer(0x000000ff);
+    // Render the screen
+    SDL_RenderPresent(renderer);
 }
 int main() {
     is_running = initialize_window();

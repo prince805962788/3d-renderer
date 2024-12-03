@@ -1,6 +1,6 @@
 #include "mesh.h"
 #include "vector.h"
-vec3_t cube_vertices[N_CUBE_VERTICES] = {
+vec3_t cube_vertices[N_MESH_VERTICES] = {
     {.x = -1, .y = -1, .z = -1}, // 1
     {.x = -1, .y = 1, .z = -1},  // 2
     {.x = 1, .y = 1, .z = -1},   // 3
@@ -10,7 +10,7 @@ vec3_t cube_vertices[N_CUBE_VERTICES] = {
     {.x = -1, .y = 1, .z = 1},   // 7
     {.x = -1, .y = -1, .z = 1},  // 8
 };
-face_t cube_faces[N_CUBE_FACES] = {
+face_t cube_faces[N_MESH_FACES] = {
     // front
     {.a = 1, .b = 2, .c = 3},
     {.a = 1, .b = 3, .c = 4},
