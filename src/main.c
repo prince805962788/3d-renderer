@@ -113,29 +113,16 @@ void render(void) {
     // Loop through all triangles to render
     for (int i = 0; i < N_CUBE_FACES; i++) {
         triangle_t current_triangle = triangles_to_render[i];
-        draw_rect(
+        draw_triangle(
             current_triangle.points[0].x,
             current_triangle.points[0].y,
-            3,
-            3,
-            0xffff00ff
-        );
-        draw_rect(
             current_triangle.points[1].x,
             current_triangle.points[1].y,
-            3,
-            3,
-            0xffff00ff
-        );
-        draw_rect(
             current_triangle.points[2].x,
             current_triangle.points[2].y,
-            3,
-            3,
-            0xffff00ff
+            0x0000ffff
         );
     }
-
     render_color_buffer(); // update color buffer to cache for rendering screen
     clear_color_buffer(0x000000ff); // clear color buffer to prepare next frame
 
