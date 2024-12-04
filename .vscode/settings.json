@@ -7,6 +7,8 @@
     "display.h": "c",
     "stdbool.h": "c",
     "stdint.h": "c",
-    "array": "cpp"
+    "array": "cpp",
+    "vector.h": "c",
+    "string.h": "c"
   }
 }

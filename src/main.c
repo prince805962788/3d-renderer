@@ -6,7 +6,6 @@
 triangle_t *triangles_to_render = NULL;
 
 vec3_t camera_position = {.x = 0, .y = 0, .z = -5};
-vec3_t cube_rotation = {.x = 0, .y = 0, .z = 0};
 float fov_factor = 640;
 
 bool is_running = false;
@@ -29,6 +28,9 @@ void setup(void) {
         window_width,
         window_height
     );
+    // 当程序在 build 目录下运行时，使用 ./assets/f22.obj 是正确的，因为 assets
+    // 文件夹应该被复制到或链接到构建目录中。这是一种常见的做法，确保程序可以在构建目录中正确运行
+    load_obj_file_data("./assets/f22.obj");
 }
 void process_input(void) {
     SDL_Event event;
@@ -62,19 +64,20 @@ void update(void) {
     // Initialize the array of triangles to render
     triangles_to_render = NULL;
 
-    cube_rotation.x += 0.01;
-    cube_rotation.y += 0.01;
-    cube_rotation.z += 0.01;
+    mesh.rotation.x += 0.01;
+    mesh.rotation.y += 0.00;
+    mesh.rotation.z += 0.00;
 
     // Loop all triangle faces of our cube
-    for (int i = 0; i < N_MESH_FACES; i++) {
-        face_t cube_face = cube_faces[i];
+    int num_faces = array_length(mesh.faces);
+    for (int i = 0; i < num_faces; i++) {
+        face_t mesh_face = mesh.faces[i];
 
         // Get the vertices of the triangle
         vec3_t face_vertices[3];
-        face_vertices[0] = cube_vertices[cube_face.a - 1];
-        face_vertices[1] = cube_vertices[cube_face.b - 1];
-        face_vertices[2] = cube_vertices[cube_face.c - 1];
+        face_vertices[0] = mesh.vertices[mesh_face.a - 1];
+        face_vertices[1] = mesh.vertices[mesh_face.b - 1];
+        face_vertices[2] = mesh.vertices[mesh_face.c - 1];
 
         triangle_t projected_triangle;
 
@@ -83,11 +86,11 @@ void update(void) {
             vec3_t transformed_vertex = face_vertices[j];
             // Apply rotation
             transformed_vertex =
-                vec3_rotate_x(transformed_vertex, cube_rotation.x);
+                vec3_rotate_x(transformed_vertex, mesh.rotation.x);
             transformed_vertex =
-                vec3_rotate_y(transformed_vertex, cube_rotation.y);
+                vec3_rotate_y(transformed_vertex, mesh.rotation.y);
             transformed_vertex =
-                vec3_rotate_z(transformed_vertex, cube_rotation.z);
+                vec3_rotate_z(transformed_vertex, mesh.rotation.z);
 
             // Transform the vertex by the camera position
             transformed_vertex.z -= camera_position.z;
