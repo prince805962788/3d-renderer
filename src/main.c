@@ -79,6 +79,36 @@ void update(void) {
         face_vertices[1] = mesh.vertices[mesh_face.b - 1];
         face_vertices[2] = mesh.vertices[mesh_face.c - 1];
 
+        vec3_t transformed_vertices[3];
+
+        // Check backface culling
+        vec3_t vector_a = transformed_vertices[0]; /*   A   */
+        vec3_t vector_b = transformed_vertices[1]; /*  / \  */
+        vec3_t vector_c = transformed_vertices[2]; /* C---B */
+
+        // Get the vector subtraction of B-A and C-A
+        vec3_t vector_ab = vec3_sub(vector_b, vector_a);
+        vec3_t vector_ac = vec3_sub(vector_c, vector_a);
+        vec3_normalize(&vector_ab);
+        vec3_normalize(&vector_ac);
+
+        // Compute the face normal (using cross product to find perpendicular)
+        vec3_t normal = vec3_cross(vector_ab, vector_ac);
+        vec3_normalize(&normal);
+
+        // Find the vector between vertex A in the triangle and the camera
+        // origin
+        vec3_t camera_ray = vec3_sub(camera_position, vector_a);
+
+        // Calculate how aligned the camera ray is with the face normal (using
+        // dot product)
+        float dot_normal_camera = vec3_dot(normal, camera_ray);
+
+        // angle > Math.PI / 2, is backface culling
+        if (dot_normal_camera < 0) {
+            continue;
+        }
+
         triangle_t projected_triangle;
 
         // Loop all 3 vertices of this current face and apply transformations
